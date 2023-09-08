@@ -73,7 +73,7 @@ class Ball {
         let invert = (dy > dx);
 
         if (invert) {
-            let temp = dx; // swap dx, dy
+            let temp = dx; 
             let dx = dy;
             let dy = temp;
             let isPositiveX = (posY < destY);
