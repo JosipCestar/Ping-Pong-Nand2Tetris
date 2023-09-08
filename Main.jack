@@ -1,0 +1,41 @@
+ 
+ 
+    class Main {
+
+
+        function void main() {
+            var Game game;
+            var char key;
+            var boolean isRunning;
+
+            do Output.moveCursor(8,26);
+            do Output.printString("{Ping Pong}");
+            do Output.moveCursor(10,24);
+            do Output.printString("1.Normal Mode");
+            do Output.moveCursor(12,24);
+            do Output.printString("2.Bot Mode");
+            do Output.moveCursor(14,18);
+            do Output.printString("{Press 1 or 2 to choose mode}");
+
+            let isRunning = true;
+
+            while ((key = 0) | isRunning){
+                    let key=Keyboard.keyPressed();
+                if (key = 49) {
+                    do Game.newInstance();
+                    let game = Game.getInstance();
+                    do game.run();
+                    do game.dispose();
+                    return;
+                }
+                if (key = 50) {
+                    do Game.newInstance();
+                    let game = Game.getInstance();
+                    do game.run2();
+                    do game.dispose();
+                    return;
+                }
+            }
+            return;
+        }
+}

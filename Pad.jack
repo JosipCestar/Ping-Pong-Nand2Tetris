@@ -1,0 +1,101 @@
+    class Pad {
+        field int posX, posY;       
+        field int width, height;    
+        field int direction;        
+
+        constructor Pad new(int aX, int aY, int aWidth, int aHeight) {
+            let posX = aX;
+            let posY = aY;
+            let width = aWidth;
+            let height = aHeight;
+            let direction = 2;
+            do show();
+            return this;
+        }
+
+        method void dispose() {
+            do Memory.deAlloc(this);
+            return;
+        }
+
+        method void show() {
+            do Screen.setColor(true);
+            do Screen.drawRectangle(posX, posY, posX + width, posY + height);
+            return;
+        }
+
+        method void hide() {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posX, posY, posX + width, posY + height);
+            return;
+        }
+
+        method void setDirection(int newDirection) {
+            let direction = newDirection;
+            return;
+        }
+
+        method int getDirection() {
+            return direction;
+        }
+
+        method int getLeft() {
+            return posX;
+        }
+
+        method void tracker(int ballY) {
+            if ((ballY) > (posY + (height/2))) {
+                do setDirection(2);
+            }
+            if ((ballY) < posY) {
+                do setDirection(1);
+            }
+            return;
+        }
+
+        method int getTop() {
+            return posY;
+        }
+
+        method int getBottom() {
+            return (posY + height);
+        }
+
+        method void setWidth(int newWidth) {
+            do hide();
+            let width = newWidth;
+            do show();
+            return;
+        }
+
+        method int getWidth() {
+            return width;
+        }
+
+        method int getRight() {
+            return (posX + width);
+        }
+
+        method void move() {
+            if (direction = 2) {
+                let posY = posY + 4;
+                if ((posY + height) > 229) {
+                    let posY = 229 - height;
+                }
+                do Screen.setColor(false);
+                do Screen.drawRectangle(posX, posY - 4, posX + width, (posY + height) - 4);
+                do Screen.setColor(true);
+                do Screen.drawRectangle(posX, posY, posX + width, posY + height);
+            } else {
+                let posY = posY - 4;
+                if (posY < 2) {
+                    let posY = 3;
+                }
+                do Screen.setColor(false);
+                do Screen.drawRectangle(posX, posY + 4, posX + width, (posY + height) + 4);
+                do Screen.setColor(true);
+                do Screen.drawRectangle(posX, posY, posX + width, posY + height);
+            }
+            return;
+        }
+ }

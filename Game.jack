@@ -1,0 +1,276 @@
+class Game {
+    static Game instance;
+    field Pad batone;
+    field Pad battwo;
+    field Ball ball;
+    field boolean exit;
+    field boolean reset;
+    field int score1;
+    field int score2;
+    field int wall;
+    field int batheight;
+    field int lastWall;
+
+    constructor Game new() {
+        do Screen.clearScreen();
+        let score1 = 0;
+        let score2 = 0;
+        let batheight = 40;
+        let batone = Pad.new(2, 102, 10, batheight);
+        let battwo = Pad.new(500, 102, 10, batheight);
+        let ball = Ball.new(275, 125, 12, 500, 3, 230);
+        do ball.setDestination(501, 200);
+        do Screen.drawRectangle(0, 230, 511, 232);
+        do Screen.drawRectangle(0, 0, 511, 2);
+        do Output.moveCursor(22, 28);
+        do Output.printString("SCORE");
+
+        let exit = false;
+        let reset = false;
+        let lastWall = 0;
+        let wall = 0;
+        return this;
+    }
+
+    method void dispose() {
+        do batone.dispose();
+        do battwo.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    function void newInstance() {
+        let instance = Game.new();
+        return;
+    }
+
+    function Game getInstance() {
+        return instance;
+    }
+
+    method void run() {
+        var char key;
+        var boolean x;
+        var boolean fin;
+        var int xkord;
+        
+        while (~reset) {
+            let lastWall = 0;
+            let wall = 0;
+            let exit = false;
+
+            while (~exit) {
+                while (((key = 0)) & (~exit)) {
+                    let key = Keyboard.keyPressed();
+                    let xkord = ball.getTop();
+                    do battwo.tracker(xkord);
+                    do batone.move();
+                    do battwo.move();
+                    do moveBall();
+                    do Sys.wait(50);
+                }
+
+                if (key = 87) {
+                    do batone.setDirection(1);
+                } else {
+                    if (key = 83) {
+                        do batone.setDirection(2);
+                    }
+                }
+
+                
+                while ((~(key = 0)) & (~exit)) {
+                    let key = Keyboard.keyPressed();
+                    let xkord = ball.getTop();
+                    do battwo.tracker(xkord);
+                    do batone.move();
+                    do battwo.move();
+                    do moveBall();
+                    do Sys.wait(50);
+                }
+            }
+
+            if (exit) {
+                if (ball.getLeft() < 200) {
+                    let score2 = score2 + 1;
+                    do ball.hide();
+                    do Output.moveCursor(22, 10);
+                    do Output.printInt(score1);
+                    do Output.moveCursor(22, 50);
+                    do Output.printInt(score2);
+
+                    do ball.dispose();
+                    let ball = Ball.new(275, 125, 12, 500, 3, 230);
+                    do ball.setDestination(501, 200);
+                    let x = Win();
+                    if (x) {
+                        let reset = true;
+                    }
+                } else {
+                    let score1 = score1 + 1;
+                    do ball.hide();
+                    do Output.moveCursor(22, 10);
+                    do Output.printInt(score1);
+                    do Output.moveCursor(22, 50);
+                    do Output.printInt(score2);
+
+                    do ball.dispose();
+                    let ball = Ball.new(275, 125, 12, 500, 3, 230);
+                    do ball.setDestination(0, 200);
+                    let x = Win();
+                    if (x) {
+                        let reset = true;
+                    }
+                }
+            }
+        }
+        do Screen.clearScreen();
+        do Sys.wait(1500);
+        if (score1 = 3) {
+            do Output.moveCursor(12, 28);
+            do Output.printString("WINNER");
+        } else {
+            do Output.moveCursor(12, 28);
+            do Output.printString("LOSER");
+        }
+
+        let fin = true;
+        while (fin) {
+            do Sys.wait(50);
+        }
+
+        return;
+    }
+
+    method void run2() {
+        var char key;
+        var boolean x;
+        var boolean fin;
+        var int xkord,xkord2;
+
+        while (~reset) {
+            let lastWall = 0;
+            let wall = 0;
+            let exit = false;
+
+            while (~exit) {
+                let xkord = ball.getTop();
+                do battwo.tracker(xkord);
+                do batone.tracker(xkord);
+                do battwo.move();
+                do batone.move();
+                do moveBall();
+                do Sys.wait(5);
+            }
+
+            if (exit) {
+                if (ball.getLeft() < 200) {
+                    let score2 = score2 + 1;
+                    do ball.hide();
+                    do Output.moveCursor(22, 10);
+                    do Output.printInt(score1);
+                    do Output.moveCursor(22, 50);
+                    do Output.printInt(score2);
+
+                    do ball.dispose();
+                    let ball = Ball.new(275, 125, 12, 500, 3, 230);
+                    do ball.setDestination(501, 200);
+                    let x = Win();
+                    if (x) {
+                        let reset = true;
+                    }
+                } else {
+                    let score1 = score1 + 1;
+                    do ball.hide();
+                    do Output.moveCursor(22, 10);
+                    do Output.printInt(score1);
+                    do Output.moveCursor(22, 50);
+                    do Output.printInt(score2);
+
+                    do ball.dispose();
+                    let ball = Ball.new(275, 125, 12, 500, 3, 230);
+                    do ball.setDestination(0, 200);
+                    let x = Win();
+                    if (x) {
+                        let reset = true;
+                    }
+                }
+            }
+        }
+        do Screen.clearScreen();
+        do Sys.wait(500);
+        if (score1 = 3) {
+            do Output.moveCursor(12, 28);
+            do Output.printString("WINNER");
+        } else {
+            do Output.moveCursor(12, 28);
+            do Output.printString("LOSER");
+        }
+
+        let fin = true;
+        while (fin) {
+            do Sys.wait(50);
+        }
+
+        return;
+    }
+
+    method boolean Win() {
+        if (score1 = 3) {
+            return true;
+        } else {
+            if (score2 = 3) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+method void moveBall() {
+    var int bouncingDirection, batoneLeft, batoneRight, battwoLeft, battwoRight, ballLeft, ballRight, bonet, btwot, boneb, btwob, ballBottom, ballTop;
+
+    let wall = ball.move();
+
+    if ((wall > 0) & (~(wall = lastWall))) {
+        let lastWall = wall;
+        let bouncingDirection = 0;
+        let bonet = batone.getTop();
+        let btwot = battwo.getTop();
+        let boneb = batone.getBottom();
+        let btwob = battwo.getBottom();
+        let ballBottom = ball.getBottom();
+        let ballTop = ball.getTop();
+
+        if (wall = 1) {
+            let exit = (((ballBottom) < bonet) | ((ballTop) > boneb));
+            if (~exit) {
+                if (ballTop < (bonet + 18)) {
+                    let bouncingDirection = 1;
+                } else {
+                    if (ballBottom > (boneb - 18)) {
+                        let bouncingDirection = -1;
+                    }
+                }
+            }
+        }
+
+        if (wall = 2) {
+            let exit = (((ballTop) > btwob) | ((ballBottom) < btwot));
+            if (~exit) {
+                if (ballTop < (btwot + 18)) {
+                    let bouncingDirection = 1;
+                } else {
+                    if (ballBottom > (btwob - 18)) {
+                        let bouncingDirection = -1;
+                    }
+                }
+            }
+        }
+
+        do ball.bounce(bouncingDirection);
+    }
+    return;
+}
+
+}    

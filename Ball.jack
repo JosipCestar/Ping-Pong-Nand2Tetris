@@ -1,0 +1,200 @@
+
+
+
+class Ball {
+    field int posX, posY;
+    field int lengthX, lengthY,dx,dy;
+    field int d, straightD, diagonalD;
+    field boolean invert, isPositiveX, isPositiveY;
+    field int leftWall, rightWall, topWall, bottomWall;
+    field int currentWall,lastfactor;
+    field Random rand;
+
+    constructor Ball new(int aX, int aY,
+        int leftW, int rightW, int topW, int bottomW) {
+        let posX = aX;
+        let posY = aY;
+        let leftWall = leftW;
+        let rightWall = rightW - 6;
+        let topWall = topW;
+        let bottomWall = bottomW - 6;
+        let currentWall = 0;
+        do show();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void show() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(posX, posY, posX + 5, posY + 5);
+        return;
+    }
+
+    method void hide() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(posX, posY, posX + 5, posY + 5);
+        return;
+    }
+
+    method int getLengthX() {
+        return lengthX;
+    }
+
+    method int getLengthY() {
+        return lengthY;
+    }
+
+    method int getLeft() {
+        return posX;
+    }
+
+    method int getRight() {
+        return posX + 5;
+    }
+
+    method int getTop() {
+        return posY;
+    }
+
+    method int getBottom() {
+        return posY + 5;
+    }
+
+    method void setDestination(int destX, int destY) {
+        var int temp;
+        let lengthX = destX - posX;
+        let lengthY = destY - posY;
+        let dx = Math.abs(lengthX);
+        let dy = Math.abs(lengthY);
+        let invert = (dy > dx);
+
+        if (invert) {
+            let temp = dx; // swap dx, dy
+            let dx = dy;
+            let dy = temp;
+            let isPositiveX = (posY < destY);
+            let isPositiveY = (posX < destX);
+        } else {
+            let isPositiveX = (posX < destX);
+            let isPositiveY = (posY < destY);
+        }
+
+        let d = (2 * dy) - dx;
+        let straightD = 2 * dy;
+        let diagonalD = 2 * (dy - dx);
+
+        return;
+    }
+
+    method int move() {
+        do hide();
+
+        if (d < 0) {
+            let d = d + straightD;
+        } else {
+            let d = d + diagonalD;
+
+            if (isPositiveY) {
+                if (invert) {
+                    let posX = posX + 5;
+                } else {
+                    let posY = posY + 2;
+                }
+            } else {
+                if (invert) {
+                    let posX = posX - 5;
+                } else {
+                    let posY = posY - 2;
+                }
+            }
+        }
+
+        if (isPositiveX) {
+            if (invert) {
+                let posY = posY + 2;
+            } else {
+                let posX = posX + 5;
+            }
+        } else {
+            if (invert) {
+                let posY = posY - 2;
+            } else {
+                let posX = posX - 5;
+            }
+        }
+
+        if (~(posX > leftWall)) {
+            let currentWall = 1;
+            let posX = leftWall;
+        }
+        if (~(posX < rightWall)) {
+            let currentWall = 2;
+            let posX = rightWall;
+        }
+        if (~(posY > topWall)) {
+            let currentWall = 3;
+            let posY = topWall;
+        }
+        if (~(posY < bottomWall)) {
+            let currentWall = 4;
+            let posY = bottomWall;
+        }
+
+        do show();
+
+        return currentWall;
+    }
+
+    method void bounce(int bouncingDirection) {
+        var int newX, newY, divLengthX, divLengthY, factor;
+        let rand = Random.randRange(75);
+        let rand = rand + 20;
+        if (bouncingDirection = 0){
+            let factor = 1;
+        } else {
+            if (bouncingDirection = 1){
+                let factor = -1;
+            } else {let factor = 1;}
+        }
+
+        if (currentWall = 1) {
+            let newX = 506;
+            let newY = posY + ((dy+rand)*factor);
+        } else {
+            if (currentWall = 2) {
+                let newX = 0;
+                let newY = posY + ((dy+rand)*factor);
+            } else {
+                if (currentWall = 3) {
+                    if (isPositiveX){
+                        let newX = posX + (dx*factor);
+                        let newY = 250;
+                    } 
+                    else {
+                        let newX = posX - (dx*factor);
+                        let newY = 250;
+                    } 
+                    }
+                    else {
+                        if (isPositiveX){
+                            let newX = posX + (dx*factor);
+                            let newY = 0;
+                    } 
+                        else {
+                            let newX = posX - (dx*factor);
+                            let newY = 0;
+                    }
+                    
+                }
+            }
+
+        }
+
+        do setDestination((newX), (newY));
+        return;
+    }
+}
